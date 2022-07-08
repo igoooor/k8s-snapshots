@@ -4,3 +4,4 @@ dist/
 .cache/
 .mypy_cache/
 .vscode
+.history

@@ -1,4 +1,4 @@
-from typing import Dict, List, NamedTuple
+from typing import Dict, List, NamedTuple, Union
 import digitalocean
 from digitalocean.baseapi import NotFoundError
 from k8s_snapshots.kube import SnapshotRule

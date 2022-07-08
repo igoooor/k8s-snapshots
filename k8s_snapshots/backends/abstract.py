@@ -1,6 +1,6 @@
 import enum
 import pendulum
-from typing import Dict, List, NamedTuple, Any
+from typing import Dict, List, NamedTuple, Any, Union
 from ..context import Context
 from k8s_snapshots.kube import SnapshotRule
 import pykube.objects

@@ -2,7 +2,7 @@ import json
 import pendulum
 import re
 import requests
-from typing import List, Dict, NamedTuple
+from typing import List, Dict, NamedTuple, Union
 from googleapiclient import discovery
 from oauth2client.service_account import ServiceAccountCredentials
 from oauth2client.client import GoogleCredentials
