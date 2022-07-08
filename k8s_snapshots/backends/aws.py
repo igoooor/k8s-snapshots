@@ -5,6 +5,7 @@ import pendulum
 import boto3
 from urllib.parse import urlparse
 from ..context import Context
+from k8s_snapshots.kube import SnapshotRule
 from k8s_snapshots.snapshot import Snapshot
 from .abstract import NewSnapshotIdentifier, SnapshotStatus
 from ..errors import SnapshotCreateError
@@ -51,7 +52,14 @@ def get_current_region(ctx):
     return ctx.config['aws_region']
 
 
-def get_disk_identifier(volume: pykube.objects.PersistentVolume) -> AWSDiskIdentifier:
+def get_disk_identifier(
+    volume: pykube.objects.PersistentVolume,
+    source: Union[
+        pykube.objects.PersistentVolumeClaim,
+        pykube.objects.PersistentVolume,
+        SnapshotRule
+    ]
+) -> AWSDiskIdentifier:
     """Parses the AWS volume id, and the region the volume is in, from the given `PersistentVolume`,
     and returns them as a `AWSDiskIdentifier` tuple.
 

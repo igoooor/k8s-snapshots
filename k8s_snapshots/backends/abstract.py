@@ -2,6 +2,7 @@ import enum
 import pendulum
 from typing import Dict, List, NamedTuple, Any
 from ..context import Context
+from k8s_snapshots.kube import SnapshotRule
 import pykube.objects
 
 
@@ -34,7 +35,14 @@ class Snapshot(NamedTuple):
 NewSnapshotIdentifier = Any
 
 
-def get_disk_identifier(volume: pykube.objects.PersistentVolume) -> DiskIdentifier:
+def get_disk_identifier(
+    volume: pykube.objects.PersistentVolume,
+    source: Union[
+        pykube.objects.PersistentVolumeClaim,
+        pykube.objects.PersistentVolume,
+        SnapshotRule
+    ]
+) -> DiskIdentifier:
     """Return a DiskIdentifier from a PersistentVolume."""
     raise NotImplementedError()
 

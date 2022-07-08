@@ -162,7 +162,7 @@ async def rule_from_pv(
         )
 
     # Let the backend parse and validate this volume.
-    disk = backend_module.get_disk_identifier(volume)
+    disk = backend_module.get_disk_identifier(volume, source)
     _log.debug('Volume supported by backend',
                volume=volume, backend=backend_module, disk=disk)
 

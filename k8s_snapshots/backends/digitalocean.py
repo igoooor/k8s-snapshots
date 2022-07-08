@@ -1,6 +1,7 @@
 from typing import Dict, List, NamedTuple
 import digitalocean
 from digitalocean.baseapi import NotFoundError
+from k8s_snapshots.kube import SnapshotRule
 from .abstract import (
     DiskIdentifier, Snapshot, NewSnapshotIdentifier, SnapshotStatus)
 import pendulum
@@ -22,7 +23,12 @@ class InvalidVolumeNameError(ValueError):
 
 
 def get_disk_identifier(
-    volume: pykube.objects.PersistentVolume
+    volume: pykube.objects.PersistentVolume,
+    source: Union[
+        pykube.objects.PersistentVolumeClaim,
+        pykube.objects.PersistentVolume,
+        SnapshotRule
+    ]
 ) -> DODiskIdentifier:
     volume_id = volume.obj['spec']['csi']['volumeHandle']
 

@@ -118,7 +118,7 @@ def get_disk_identifier(
         SnapshotRule
     ]
 ) -> GoogleDiskIdentifier:
-    gce_disk = volume.obj['spec']['gcePersistentDisk']['pdName']
+    gce_disk = volume.obj['spec']['csi']['volumeHandle'].split('/')[-1]
 
     # How can we know the zone? In theory, the storage class can
     # specify a zone; but if not specified there, K8s can choose a
@@ -129,15 +129,15 @@ def get_disk_identifier(
     # Apparently, this is a thing in the Kubernetes source too, see:
     # getDiskByNameUnknownZone in pkg/cloudprovider/providers/gce/gce.go,
     # e.g. https://github.com/jsafrane/kubernetes/blob/2e26019629b5974b9a311a9f07b7eac8c1396875/pkg/cloudprovider/providers/gce/gce.go#L2455
-    gce_disk_zone = volume.labels.get(
-        'failure-domain.beta.kubernetes.io/zone'
+    gce_disk_zone = source.labels.get(
+        'backup.kubernetes.io/zone'
     )
 
     if not gce_disk_zone:
         raise UnsupportedVolume('cannot find the zone of the disk')
 
-    gce_disk_region = volume.labels.get(
-        'failure-domain.beta.kubernetes.io/region'
+    gce_disk_region = source.labels.get(
+        'backup.kubernetes.io/region'
     )
 
     if not gce_disk_region:
@@ -145,14 +145,14 @@ def get_disk_identifier(
 
     if "__" in gce_disk_zone:
         # seems like Google likes to put __ in between zones in the label
-        # failure-domain.beta.kubernetes.io/zone when the pv is regional
+        # backup.kubernetes.io/zone when the pv is regional
         return GoogleDiskIdentifier(name=gce_disk, region=gce_disk_region, regional=True)
     else:
         return GoogleDiskIdentifier(name=gce_disk, zone=gce_disk_zone, regional=False)
 
 
 def supports_volume(volume: pykube.objects.PersistentVolume):
-    return bool(volume.obj['spec'].get('gcePersistentDisk'))
+    return bool(volume.obj['spec'].get('csi'))
 
 
 def parse_timestamp(date_str: str) -> pendulum.Pendulum:
